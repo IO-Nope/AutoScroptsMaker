@@ -1,3 +1,4 @@
+import xml.etree.ElementTree as ET
 class Vector2:
     def __init__(self, x, y):
         if not (isinstance(x, (int, float)) and isinstance(y, (int, float))):
@@ -20,3 +21,13 @@ class Vector2:
         return self.__mul__(other)
     def __str__(self):
         return f"({self.x}, {self.y})"
+    def to_xml_element(self):
+        elem = ET.Element("Vector2")
+        elem.set("x", str(self.x))
+        elem.set("y", str(self.y))
+        return elem
+    @classmethod
+    def from_xml_element(cls, elem:ET.Element):
+        x = float(elem.get("x",0))
+        y = float(elem.get("y",0))
+        return cls(x, y)

@@ -21,5 +21,6 @@ if you do that, give me some money please!
 
 ---
 ## Useless 
-KeyMouseMu seeming useless, but it's a potential solution for anting anti-cheat system.
+- KeyMouseMu seeming useless, but it's a potential solution for anting anti-cheat system.
 if i find a way to escape the anti-cheat system, i can just change the behavior of KeyMouseMu to make it more useful.
+- if you want use any manager ,please init GUIpoint frist.
