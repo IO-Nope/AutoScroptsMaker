@@ -1,5 +1,6 @@
 import pyautogui
-import Vector2
+from .Vector2 import Vector2
+import pydirectinput
 from typing import Optional
 from pynput import mouse, keyboard
 import threading
@@ -8,7 +9,7 @@ class KeyMouseMu:
     __instance: Optional['KeyMouseMu'] = None
     __move_time = 0.3
     __mufunc = pyautogui
-    __mouse_pre_pos = Vector2.Vector2(0,0)
+    __mouse_pre_pos = Vector2(0,0)
     @classmethod
     def Get_instance(cls)->'KeyMouseMu':
         if cls.__instance is None:
@@ -19,7 +20,7 @@ class KeyMouseMu:
             cls.__instance = super().__new__(cls)
         return cls.__instance
     def __init__(self):
-        self.__mouse_pre_pos = Vector2.Vector2(0,0)
+        self.__mouse_pre_pos = Vector2(0,0)
         return
     def __update_pre_pos(self, x, y):
         self.__mouse_pre_pos.x = x
@@ -59,7 +60,7 @@ class KeyMouseMu:
         return pyautogui.position()
     def Get_mouse_when_double_click(self):
         stop_event = threading.Event()
-        positon = Vector2.Vector2(0,0)
+        positon = Vector2(0,0)
         def on_click(x, y, button, pressed):
             if pressed and button == mouse.Button.left:
                 if positon.x ==x and positon.y == y:
@@ -72,5 +73,5 @@ class KeyMouseMu:
         listener.start()
         stop_event.wait()
         listener.stop()
-    
+        print(f"success get double click position {positon.x}, {positon.y}")
         return (positon.x, positon.y)

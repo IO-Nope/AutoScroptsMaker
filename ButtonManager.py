@@ -1,16 +1,18 @@
-from .Base import GUIPoint
-from .Base import KeyMouseMu
+from Base.GUIPoint import GUIPoint
+from Base.KeyMouseMu import KeyMouseMu
 from typing import Optional
 import xml.etree.ElementTree as ET
 import os
 class ButtonManager:
     __instance: Optional['ButtonManager'] = None
-    __Buttons: dict[str,GUIPoint.GUIPoint]
+    __Buttons: dict[str,GUIPoint]
     __path:str
 
     def load(self):
         if not os.path.exists(self.__path):
             assert False, f"ButtonManager: {self.__path} not exist"
+        if os.path.getsize(self.__path) == 0:
+            return
         tree = ET.parse(self.__path)
         root = tree.getroot()
         self.__Buttons = {}
@@ -19,15 +21,17 @@ class ButtonManager:
             if not name:
                 print("warning", "Button name is empty")
                 continue
-            point = GUIPoint.GUIPoint.default()
+            point = GUIPoint.default()
             pointelem = elem.find("Point")
             if pointelem is not None:
-                point = GUIPoint.GUIPoint.from_xml_element(pointelem)
+                point = GUIPoint.from_xml_element(pointelem)
             else: 
                 print("warning", f"Button: {name} Point is empty")
             self.__Buttons[name] = point
         return
     def save(self):
+        if not hasattr(self, '_ButtonManager__Buttons'):
+            return
         root = ET.Element("ButtonManager")
         for name,point in self.__Buttons.items():
             elem = ET.Element("Button")
@@ -60,7 +64,7 @@ class ButtonManager:
         self.__path = path
         self.load()
         return
-    def Add_Button(self,name,Point:GUIPoint.GUIPoint)->bool:
+    def Add_Button(self,name,Point:GUIPoint)->bool:
         if not self.__Buttons.get(name , 0):
             print("warning", f"Button: {name} already exist")
             return False
@@ -76,7 +80,7 @@ class ButtonManager:
         if not self.__Buttons.get(name , 0):
             print("warning", f"Button: {name} not exist")
             return False
-        KKMins = KeyMouseMu.KeyMouseMu.Get_instance()
+        KKMins = KeyMouseMu.Get_instance()
         tempVec = self.__Buttons[name].Get_point()
         KKMins.Click_mouse_rel(tempVec.x,tempVec.y)
         return True

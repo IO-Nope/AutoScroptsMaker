@@ -1,6 +1,6 @@
-from .Base import Vector2
-from .Base import ScreenDetector
-from .Base import GUIPoint
+from Base.Vector2 import Vector2
+from Base.ScreenDetector import ScreenDetector
+from Base.GUIPoint import GUIPoint
 from PIL import Image
 from tkinter import messagebox
 from typing import Optional
@@ -15,9 +15,11 @@ class ScreenDectorManager:
         if not os.path.isdir(self.__path):
             print("path not exist")
             return
-        xml_path = os.path.join(self.__path,"ScreenDectorManager.xml")
+        xml_path = os.path.join(self.__path,"ScreenDetectors.xml")
         if not os.path.isfile(xml_path):
             print("xml file not exist")
+            return
+        if os.path.getsize(xml_path) == 0:
             return
         tree = ET.parse(xml_path)
         root = tree.getroot()
@@ -35,7 +37,10 @@ class ScreenDectorManager:
         if not os.path.isdir(self.__path):
             print("path not exist")
             return
+        if not hasattr(self, '_ScreenDetectorManager__detectors'):
+            return
         #create xml file
+        
         root = ET.Element("ScreenDectorManager")
         for name , detector in self.__detectors.items():
             elem = ET.Element("Detector")
@@ -64,9 +69,10 @@ class ScreenDectorManager:
     def __init__(self):
         return
     def __del__(self):
+
         self.save()
         return
-    def Add_Detector(self,name,*aimg:Image.Image,RegionLT:GUIPoint.GUIPoint,RegionRB:GUIPoint.GUIPoint)->bool:
+    def Add_Detector(self,name:str,*aimg:Image.Image,RegionLT:GUIPoint,RegionRB:GUIPoint)->bool:
         if not self.__detectors.get(name , 0):
             messagebox.showwarning("warning", f"detector: {name} already exist")
             return False
