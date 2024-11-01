@@ -29,7 +29,6 @@ class AutoScriptMaker:
             cls.__instance = super().__new__(cls)
         return cls.__instance
     def __init__(self):
-        atexit.register(self.SaveProject)
         return
     def __del__(self):
         return

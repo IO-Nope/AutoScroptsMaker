@@ -5,7 +5,7 @@
 - Python 3.x
 >use the following command to install the required libraries:
 ```
->pip install numpy pyautogui opencv-python pillow
+>pip install numpy pyautogui opencv-python pillow pygetwindow pydirectinput
 ```
 >I create a vittual environment to divide this from my system , I advise that you should do too.
 ---
