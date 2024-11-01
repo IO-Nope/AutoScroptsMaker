@@ -4,6 +4,7 @@ from Base.GUIPoint import GUIPoint
 from PIL import Image
 from Base.KeyMouseMu import KeyMouseMu
 import xml.etree.ElementTree as ET
+from typing import Optional
 import os
 class ScreenDetector:
     __aimImg=[]
@@ -11,10 +12,13 @@ class ScreenDetector:
     __regionRB:GUIPoint
     __isDebug=False
     __relatefactor = 0.8
-    def __init__(self,*aImgs:Image.Image,regionLT:GUIPoint,regionRB:GUIPoint,relatefactor:float=-1):
+    def __init__(self,*aImgs:Image.Image,
+                 regionLT:GUIPoint,
+                 regionRB:GUIPoint,
+                 relatefactor:Optional[float]=None):
         self.__regionLT = regionLT
         self.__regionRB = regionRB
-        if relatefactor > 0:
+        if relatefactor is not None:
             self.__relatefactor = relatefactor
         for img in aImgs:
             if isinstance(img,Image.Image):

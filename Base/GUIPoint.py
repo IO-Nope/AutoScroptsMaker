@@ -1,6 +1,7 @@
 from .Vector2 import Vector2
 from enum import Enum, auto
 import xml.etree.ElementTree as ET
+from typing import Optional
 class PointType(Enum):
     Topleft = auto()
     Topcenter = auto()
@@ -16,6 +17,7 @@ class PointSzieRelated(Enum):
     WindowWidth = auto()
     WindowHigh = auto()
     WindowHighAWidth = auto()
+    Nothing = auto()
     Else = auto()
     description = "the way to confirm the point location"
 class GUIPoint:
@@ -67,10 +69,13 @@ class GUIPoint:
             case PointSzieRelated.WindowHighAWidth:
                 resx = self.__base_point.x + self.__point_factor.x * GUIPoint.__gui_size.x
                 resy = self.__base_point.y + self.__point_factor.y * GUIPoint.__gui_size.y
+            case PointSzieRelated.Nothing:
+                resx = self.__base_point.x + self.__point_factor.x
+                resy = self.__base_point.y + self.__point_factor.y
             case PointSzieRelated.Else:
                 assert False, "PointSzieRelated.Else has not been implemented"
         return Vector2(resx, resy)
-    def __init_factor(self, point:Vector2):
+    def __calc_factor(self, point:Vector2):
         match self.__related_size:
             case PointSzieRelated.WindowWidth:
                 self.__point_factor.x = (point.x - self.__base_point.x) / GUIPoint.__gui_size.x
@@ -81,17 +86,24 @@ class GUIPoint:
             case PointSzieRelated.WindowHighAWidth:
                 self.__point_factor.x = (point.x - self.__base_point.x) / GUIPoint.__gui_size.x
                 self.__point_factor.y = (point.y - self.__base_point.y) / GUIPoint.__gui_size.y
+            case PointSzieRelated.Nothing:
+                self.__point_factor.x = point.x - self.__base_point.x
+                self.__point_factor.y = point.y - self.__base_point.y
             case PointSzieRelated.Else:
                 assert False, "PointSzieRelated.Else has not been implemented"
         return
-    def __init__(self, point:Vector2,lefttop:Vector2=Vector2(-1,-1), size:Vector2=Vector2(-1,-1), type=PointType.Center, related_size=PointSzieRelated.WindowWidth,factor=Vector2(-2,-2)):
+    def __init__(self, point: Vector2, lefttop: Optional[Vector2] = None, 
+                 size: Optional[Vector2] = None, 
+                 type=PointType.Center,
+                 related_size=PointSzieRelated.WindowWidth,
+                 factor: Optional[Vector2] = None):
         self.__type = type
         self.__related_size = related_size
-        if lefttop.x + lefttop.y + size.x +size.y != -4:
+        if lefttop is not None and size is not None:
             self.Update_gui(lefttop, size)
         else :self.__update_base_point()
-        if factor.x + factor.y == -4:
-            self.__init_factor(point)
+        if factor is not None:
+            self.__calc_factor(point)
         GUIPoint.Update_instance(self)
         return
     @classmethod

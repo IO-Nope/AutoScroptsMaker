@@ -41,7 +41,8 @@ class ButtonManager:
             elem.append(pointelem)
             root.append(elem)
         tree = ET.ElementTree(root)
-        tree.write(self.__path)
+        from builtins import open
+        tree.write(self.__path,encoding="utf-8",xml_declaration=True)
     @classmethod
     def Get_instance(cls)->'ButtonManager':
         if cls.__instance is None:
@@ -56,7 +57,6 @@ class ButtonManager:
     def __init__(self):
         return
     def __del__(self):
-        self.save()
         return
     def Init(self,path:str):
         if not os.path.exists(path):
@@ -65,7 +65,9 @@ class ButtonManager:
         self.load()
         return
     def Add_Button(self,name,Point:GUIPoint)->bool:
-        if not self.__Buttons.get(name , 0):
+        if not hasattr(self, '_ButtonManager__Buttons'):
+            self.__Buttons = {}
+        if self.__Buttons.get(name , None) is not None:
             print("warning", f"Button: {name} already exist")
             return False
         self.__Buttons[name]=Point

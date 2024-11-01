@@ -40,7 +40,6 @@ class ScreenDectorManager:
         if not hasattr(self, '_ScreenDetectorManager__detectors'):
             return
         #create xml file
-        
         root = ET.Element("ScreenDectorManager")
         for name , detector in self.__detectors.items():
             elem = ET.Element("Detector")
@@ -51,7 +50,8 @@ class ScreenDectorManager:
             root.append(elem)
         tree = ET.ElementTree(root)
         xml_path = os.path.join(self.__path,"ScreenDectorManager.xml")
-        tree.write(xml_path)
+        from builtins import open
+        tree.write(self.__path,encoding="utf-8",xml_declaration=True)
         return
     @classmethod
     def Get_instance(cls)->'ScreenDectorManager':
@@ -69,10 +69,10 @@ class ScreenDectorManager:
     def __init__(self):
         return
     def __del__(self):
-
-        self.save()
         return
     def Add_Detector(self,name:str,*aimg:Image.Image,RegionLT:GUIPoint,RegionRB:GUIPoint)->bool:
+        if not hasattr(self, '_ScreenDetectorManager__detectors'):
+            self.__detectors = {}
         if not self.__detectors.get(name , 0):
             messagebox.showwarning("warning", f"detector: {name} already exist")
             return False
